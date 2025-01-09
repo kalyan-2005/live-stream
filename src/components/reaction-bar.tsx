@@ -1,9 +1,9 @@
 "use client";
 
-import { useChat, useDataChannel } from "@livekit/components-react";
+import { useChat, useDataChannel, useRoomContext, useIsRecording } from "@livekit/components-react";
 import { Button, Flex, Tooltip } from "@radix-ui/themes";
 import { DataPacket_Kind } from "livekit-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function ReactionBar() {
   const [encoder] = useState(() => new TextEncoder());
@@ -14,6 +14,47 @@ export function ReactionBar() {
     send(encoder.encode(emoji), { kind: DataPacket_Kind.LOSSY });
     if (sendChat) {
       sendChat(emoji);
+    }
+  };
+
+  // recording
+
+  const room = useRoomContext();
+  const recordingEndpoint = process.env.NEXT_PUBLIC_LK_RECORD_ENDPOINT;
+
+  const isRecording = useIsRecording();
+  const [initialRecStatus, setInitialRecStatus] = useState(isRecording);
+  const [processingRecRequest, setProcessingRecRequest] = useState(false);
+
+  useEffect(() => {
+    if (initialRecStatus !== isRecording) {
+      setProcessingRecRequest(false);
+    }
+  }, [isRecording, initialRecStatus]);
+
+  const toggleRoomRecording = async () => {
+    if (!recordingEndpoint) {
+      throw TypeError('No recording endpoint specified');
+    }
+    if (room.isE2EEEnabled) {
+      throw Error('Recording of encrypted meetings is currently not supported');
+    }
+    setProcessingRecRequest(true);
+    setInitialRecStatus(isRecording);
+    let response: Response;
+    if (isRecording) {
+      response = await fetch(recordingEndpoint + `/stop?roomName=${room.name}`);
+    } else {
+      response = await fetch(recordingEndpoint + `/start?roomName=${room.name}`);
+    }
+    if (response.ok) {
+    } else {
+      console.error(
+        'Error handling recording request, check server logs:',
+        response.status,
+        response.statusText,
+      );
+      setProcessingRecRequest(false);
     }
   };
 
@@ -49,6 +90,9 @@ export function ReactionBar() {
           🎉
         </Button>
       </Tooltip>
+      <button disabled={processingRecRequest} onClick={() => toggleRoomRecording()}>
+                {isRecording ? 'Stop' : 'Start'} Recording
+              </button>
     </Flex>
   );
 }

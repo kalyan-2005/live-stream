@@ -21,9 +21,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Theme
           appearance="dark"
-          accentColor="purple"
+          accentColor="blue"
           grayColor="mauve"
-          radius="none"
+          scaling="90%"
         >
           {children}
           <ThemePanel defaultOpen={false} />

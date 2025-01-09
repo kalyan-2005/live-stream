@@ -58,7 +58,7 @@ export function MediaDeviceSettings() {
             </Button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Content size="1">
-            {microphoneDevices.map((d) => (
+            {microphoneDevices?.map((d) => (
               <DropdownMenu.Item
                 key={d.deviceId}
                 onClick={() => setActiveMicrophoneDevice(d.deviceId)}
@@ -87,7 +87,7 @@ export function MediaDeviceSettings() {
             </Button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Content size="1">
-            {cameraDevices.map((d) => (
+            {cameraDevices?.map((d) => (
               <DropdownMenu.Item
                 key={d.deviceId}
                 onClick={() => setActiveCameraDevice(d.deviceId)}

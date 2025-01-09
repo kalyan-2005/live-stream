@@ -195,7 +195,6 @@ export function PresenceDialog({
   const viewers = participants.filter(
     (participant) => !participant.permissions?.canPublish ?? true
   );
-
   return (
     <Dialog.Root>
       <Dialog.Trigger>{children}</Dialog.Trigger>
