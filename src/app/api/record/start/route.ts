@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
       LIVEKIT_API_KEY,
       LIVEKIT_API_SECRET,
       LIVEKIT_WS_URL,
+      
       S3_KEY_ID,
       S3_KEY_SECRET,
       S3_BUCKET,

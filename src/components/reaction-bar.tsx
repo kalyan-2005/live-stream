@@ -11,7 +11,7 @@ export function ReactionBar() {
   const { send: sendChat } = useChat();
 
   const onSend = (emoji: string) => {
-    send(encoder.encode(emoji), { kind: DataPacket_Kind.LOSSY });
+    send(encoder.encode(emoji), {});
     if (sendChat) {
       sendChat(emoji);
     }
@@ -91,8 +91,8 @@ export function ReactionBar() {
         </Button>
       </Tooltip>
       <button disabled={processingRecRequest} onClick={() => toggleRoomRecording()}>
-                {isRecording ? 'Stop' : 'Start'} Recording
-              </button>
+        {isRecording ? 'Stop' : 'Start'} Recording
+      </button>
     </Flex>
   );
 }
