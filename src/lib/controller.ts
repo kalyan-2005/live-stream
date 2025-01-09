@@ -13,7 +13,7 @@ import {
   ParticipantPermission,
   RoomServiceClient,
 } from "livekit-server-sdk";
-import { TrackSource } from "livekit-server-sdk/dist/proto/livekit_models";
+import { TrackSource } from "livekit-server-sdk";
 
 export type RoomMetadata = {
   creator_identity: string;
@@ -144,14 +144,20 @@ export class Controller {
       // https://docs.livekit.io/egress-ingress/ingress/overview/#bypass-transcoding-for-whip-sessions
       options.bypassTranscoding = true;
     } else {
-      options.video = {
-        source: TrackSource.CAMERA,
-        preset: IngressVideoEncodingPreset.H264_1080P_30FPS_3_LAYERS,
-      };
-      options.audio = {
-        source: TrackSource.MICROPHONE,
-        preset: IngressAudioEncodingPreset.OPUS_STEREO_96KBPS,
-      };
+      // options.video = {
+      //   source: TrackSource.CAMERA,
+      //   encodingOptions: {
+      //     value: IngressVideoEncodingPreset.H264_1080P_30FPS_3_LAYERS,
+      //     case: "preset",
+      //   },
+      // };
+      // options.audio = {
+      //   source: TrackSource.MICROPHONE,
+      //   encodingOptions: {
+      //     value: IngressAudioEncodingPreset.OPUS_STEREO_96KBPS,
+      //     case: "preset",
+      //   },
+      // };
     }
 
     const ingress = await this.ingressService.createIngress(
@@ -189,7 +195,7 @@ export class Controller {
       auth_token: authToken,
       connection_details: {
         ws_url: process.env.LIVEKIT_WS_URL!,
-        token: at.toJwt(),
+        token: await at.toJwt(),
       },
     };
   }
@@ -231,7 +237,10 @@ export class Controller {
 
     return {
       auth_token: authToken,
-      connection_details,
+      connection_details: {
+        ws_url: process.env.LIVEKIT_WS_URL!,
+        token: await at.toJwt(),
+      },
     };
   }
 
@@ -290,7 +299,7 @@ export class Controller {
       auth_token: authToken,
       connection_details: {
         ws_url: process.env.LIVEKIT_WS_URL!,
-        token: at.toJwt(),
+        token: await at.toJwt(),
       },
     };
   }
