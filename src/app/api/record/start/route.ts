@@ -42,12 +42,15 @@ export async function GET(req: NextRequest) {
     );
 
     const existingEgresses = await egressClient.listEgress({ roomName });
+
     if (existingEgresses.length > 0 && existingEgresses.some((e) => e.status < 2)) {
       return new NextResponse('Meeting is already being recorded', { status: 409 });
     }
 
+    const filepath = `${new Date(Date.now()).toISOString()}-${roomName}.mp4`;
+
     const fileOutput = new EncodedFileOutput({
-      filepath: `${new Date(Date.now()).toISOString()}-${roomName}.mp4`,
+      filepath,
       output: {
         case: 's3',
         value: new S3Upload({
